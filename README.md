@@ -32,7 +32,7 @@ body {
   background-color: #f2f2f2;
   margin: 0;
   padding: 20px;
-}
+} 
 
 .container {
   width: 400px;
