@@ -1,1661 +1,2181 @@
 
 
-COMMON ANSWER FORMAT FOR ALL 15
 
-For every question, you can write in this order:
+AIWD Lab – Full Code for All 15 Questions (Same Format)
+Below, each question is given with the same file structure:
 
-HTML5 Structure
-CSS3 / Bootstrap Design
-JavaScript / jQuery Function
-JSON Data Format
-Node.js Backend
-NoSQL Database
-Conclusion / Working
-Sample Code
-1) Student Registration Website
+index.html
 
-1. HTML5 Structure
+style.css
 
-HTML5 is used to create a student registration form with fields like name, register number, department, and photo upload.
+script.js
+
+server.js
+
+The CSS is mostly the same for all questions. The JavaScript and Node.js also follow the same pattern as much as possible. At the end of each question, a small note tells you what changed from the common pattern.
+
+Question 1: Student Registration Website
+
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Student Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="form-box">
-            <h2>Student Registration Form</h2>
-            <form id="studentForm" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label>Student Name</label>
-                    <input type="text" id="name" class="form-control" placeholder="Enter student name" required>
-                </div>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Student Registration Website</h2>
 
-                <div class="mb-3">
-                    <label>Register Number</label>
-                    <input type="text" id="regno" class="form-control" placeholder="Enter register number" required>
-                </div>
+        <form id="mainForm">
+            <div class="mb-3">
+                <label id="label1">Student Name</label>
+                <input type="text" id="field1" class="form-control">
+            </div>
 
-                <div class="mb-3">
-                    <label>Department</label>
-                    <input type="text" id="dept" class="form-control" placeholder="Enter department" required>
-                </div>
+            <div class="mb-3">
+                <label id="label2">Register Number</label>
+                <input type="text" id="field2" class="form-control">
+            </div>
 
-                <div class="mb-3">
-                    <label>Upload Photo</label>
-                    <input type="file" id="photo" class="form-control" required>
-                </div>
+            <div class="mb-3">
+                <label id="label3">Department</label>
+                <input type="text" id="field3" class="form-control">
+            </div>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Register Student</button>
-                    <button type="reset" class="btn btn-secondary">Clear</button>
-                </div>
-            </form>
+            <div class="mb-3">
+                <label id="label4">Photo</label>
+                <input type="text" id="field4" class="form-control" placeholder="Enter photo name or URL">
+            </div>
 
-            <div id="msg" class="mt-3 text-success text-center"></div>
-        </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-success" onclick="loadData()">Load Data</button>
+            </div>
+        </form>
+
+        <div class="result-box" id="result">Output will appear here</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-CSS3 and Bootstrap are used to make the page responsive and attractive.
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<style>
-    body {
-        background-color: #f2f2f2;
-        font-family: Arial, sans-serif;
-    }
-    .form-box {
-        max-width: 650px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px gray;
-    }
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-</style>
-3. JavaScript / jQuery Function
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-JavaScript validates the form and sends data to server.
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-<script>
-document.getElementById("studentForm").addEventListener("submit", async function(e) {
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    let name = document.getElementById("name").value;
-    let regno = document.getElementById("regno").value;
-    let dept = document.getElementById("dept").value;
-    let photo = document.getElementById("photo").files[0];
+    let field1 = document.getElementById("field1").value;
+    let field2 = document.getElementById("field2").value;
+    let field3 = document.getElementById("field3").value;
+    let field4 = document.getElementById("field4").value;
 
-    if (name === "" || regno === "" || dept === "" || !photo) {
+    if (field1 === "" || field2 === "" || field3 === "" || field4 === "") {
         alert("Please fill all fields");
         return;
     }
 
-    let formData = new FormData();
-    formData.append("name", name);
-    formData.append("regno", regno);
-    formData.append("dept", dept);
-    formData.append("photo", photo);
+    let obj = { field1, field2, field3, field4 };
 
-    let res = await fetch("/register", {
+    let res = await fetch(apiUrl, {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(obj)
     });
 
     let msg = await res.text();
-    document.getElementById("msg").innerHTML = msg;
+    document.getElementById("result").innerText = msg;
+    loadData();
 });
-</script>
-4. JSON Data Format
 
-The student data can be represented in JSON format.
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
 
-{
-  "name": "Ravi",
-  "regno": "23CSE101",
-  "dept": "CSE",
-  "photo": "photo.jpg"
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Name:</b> ${item.field1 || ""}</p>
+            <p><b>Register No:</b> ${item.field2 || ""}</p>
+            <p><b>Department:</b> ${item.field3 || ""}</p>
+            <p><b>Photo:</b> ${item.field4 || ""}</p>
+        </div>`;
+    });
+
+    document.getElementById("listArea").innerHTML = out;
 }
-5. Node.js Backend
-
-Node.js with Express handles the incoming request.
+server.js
 
 const express = require("express");
 const mongoose = require("mongoose");
-const multer = require("multer");
+const path = require("path");
+
 const app = express();
 
-mongoose.connect("mongodb://127.0.0.1:27017/collegeDB");
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-const Student = mongoose.model("Student", {
-    name: String,
-    regno: String,
-    dept: String,
-    photo: String
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-const upload = multer({ dest: "uploads/" });
+const Data = mongoose.model("Student", DataSchema);
 
-app.post("/register", upload.single("photo"), async (req, res) => {
-    const student = new Student({
-        name: req.body.name,
-        regno: req.body.regno,
-        dept: req.body.dept,
-        photo: req.file.filename
-    });
-
-    await student.save();
-    res.send("Student Registered Successfully");
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Student Registered Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-MongoDB stores the student details as document records.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Only labels, display names, model name Student, and success message changed.
 
-7. Conclusion / Working
+Question 2: Responsive Event Registration Portal
 
-The user fills the form, JavaScript validates the values, Node.js receives the data, and MongoDB stores it successfully.
-
-2) Responsive Event Registration Portal
-
-1. HTML5 Structure
-
-HTML5 form elements are used to create the event registration page.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Event Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-4">
-        <div class="form-box">
-            <h2 class="text-center">Event Registration Portal</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Responsive Event Registration Portal</h2>
 
-            <form id="eventForm">
-                <div class="mb-3">
-                    <label>User Name</label>
-                    <input type="text" id="uname" class="form-control" placeholder="Enter your name" required>
-                </div>
+        <form id="mainForm">
+            <div class="mb-3">
+                <label id="label1">Name</label>
+                <input type="text" id="field1" class="form-control">
+            </div>
 
-                <div class="mb-3">
-                    <label>Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter email" required>
-                </div>
+            <div class="mb-3">
+                <label id="label2">Email</label>
+                <input type="email" id="field2" class="form-control">
+            </div>
 
-                <div class="mb-3">
-                    <label>Event Name</label>
-                    <input type="text" id="event" class="form-control" placeholder="Enter event name" required>
-                </div>
+            <div class="mb-3">
+                <label id="label3">Event Name</label>
+                <input type="text" id="field3" class="form-control">
+            </div>
 
-                <div class="mb-3">
-                    <label>Phone Number</label>
-                    <input type="text" id="phone" class="form-control" placeholder="Enter phone number">
-                </div>
+            <div class="mb-3">
+                <label id="label4">Phone Number</label>
+                <input type="text" id="field4" class="form-control">
+            </div>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Submit Registration</button>
-                </div>
-            </form>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-success" onclick="loadData()">Load Data</button>
+            </div>
+        </form>
 
-            <div id="result" class="mt-4 alert alert-info"></div>
-        </div>
+        <div class="result-box" id="result">Output will appear here</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-Bootstrap layout makes the form responsive for mobile and desktop screens.
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<style>
-    .form-box {
-        max-width: 650px;
-        margin: auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px lightgray;
-    }
-</style>
-3. JavaScript / jQuery Function
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-jQuery submit event sends data without refreshing the page.
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$("#eventForm").submit(function(e) {
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    let data = {
-        uname: $("#uname").val(),
-        email: $("#email").val(),
-        event: $("#event").val(),
-        phone: $("#phone").val()
-    };
+    let field1 = document.getElementById("field1").value;
+    let field2 = document.getElementById("field2").value;
+    let field3 = document.getElementById("field3").value;
+    let field4 = document.getElementById("field4").value;
 
-    $.ajax({
-        url: "/event",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(data),
-        success: function(response) {
-            $("#result").html(response);
-        }
+    if (field1 === "" || field2 === "" || field3 === "") {
+        alert("Please fill required fields");
+        return;
+    }
+
+    let obj = { field1, field2, field3, field4 };
+
+    let res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(obj)
     });
-});
-</script>
-4. JSON Data Format
 
-{
-  "uname": "Kavi",
-  "email": "kavi@gmail.com",
-  "event": "Web Development Workshop",
-  "phone": "9876543210"
+    let msg = await res.text();
+    document.getElementById("result").innerText = msg;
+    loadData();
+});
+
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Name:</b> ${item.field1 || ""}</p>
+            <p><b>Email:</b> ${item.field2 || ""}</p>
+            <p><b>Event:</b> ${item.field3 || ""}</p>
+            <p><b>Phone:</b> ${item.field4 || ""}</p>
+        </div>`;
+    });
+
+    document.getElementById("listArea").innerHTML = out;
 }
-5. Node.js Backend
+server.js
 
 const express = require("express");
-const app = express();
-app.use(express.json());
+const mongoose = require("mongoose");
+const path = require("path");
 
-app.post("/event", (req, res) => {
-    res.send("Registration Successful for " + req.body.event);
+const app = express();
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.listen(3000);
-6. NoSQL Database
+const Data = mongoose.model("Event", DataSchema);
 
-The event details can also be stored in MongoDB if permanent storage is needed.
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Event Registration Successful");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
+});
 
-7. Conclusion / Working
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-The user enters event details, jQuery sends JSON to Node.js, and the confirmation message is shown immediately without page refresh.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Labels changed to event fields, model name Event, display text updated.
 
-3) Quiz Web Application
+Question 3: Quiz Web Application
 
-1. HTML5 Structure
-
-HTML5 is used to display question, options, timer, and score.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Quiz Web Application</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="quiz-box">
-        <h2>Online Quiz</h2>
-
-        <div class="question-area">
-            <h4 id="question">Question comes here</h4>
-        </div>
-
-        <div id="options" class="mb-3"></div>
-
-        <div class="timer-box">
-            <p>Time Left: <span id="timer">10</span> seconds</p>
-        </div>
-
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Quiz Web Application</h2>
+        <div class="result-box" id="result">Question will appear here</div>
+        <div id="listArea" class="mt-3"></div>
+        <p><b>Time Left:</b> <span id="timer">10</span></p>
+        <p><b>Score:</b> <span id="score">0</span></p>
         <div class="text-center">
-            <button onclick="nextQuestion()">Next Question</button>
-        </div>
-
-        <div class="mt-3">
-            <h4 id="score"></h4>
+            <button type="button" class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
         </div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    body {
-        font-family: Arial;
-        background: #f4f4f4;
-    }
-    .quiz-box {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px gray;
-    }
-    button {
-        padding: 8px 16px;
-        margin-top: 5px;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-JavaScript handles timer, DOM updates, and automatic score calculation.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script>
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
 let questions = [
-    { q: "Capital of India?", options: ["Delhi", "Mumbai", "Chennai"], ans: "Delhi" },
-    { q: "2 + 2 = ?", options: ["3", "4", "5"], ans: "4" }
+    { field1: "Capital of India?", field2: "Delhi", field3: "Mumbai", field4: "Chennai", answer: "Delhi" },
+    { field1: "2 + 2 = ?", field2: "3", field3: "4", field4: "5", answer: "4" }
 ];
 
-let index = 0;
+let currentIndex = 0;
 let score = 0;
 let time = 10;
 let timer;
 
-function loadQuestion() {
-    document.getElementById("question").innerText = questions[index].q;
-    let data = "";
+function startQuiz() {
+    currentIndex = 0;
+    score = 0;
+    document.getElementById("score").innerText = score;
+    showQuestion();
+}
 
-    questions[index].options.forEach(function(opt) {
-        data += `<button onclick="checkAnswer('${opt}')">${opt}</button><br><br>`;
-    });
-
-    document.getElementById("options").innerHTML = data;
+function showQuestion() {
+    let q = questions[currentIndex];
+    document.getElementById("result").innerHTML = `<b>${q.field1}</b>`;
+    document.getElementById("listArea").innerHTML = `
+        <button onclick="checkAnswer('${q.field2}')">${q.field2}</button>
+        <button onclick="checkAnswer('${q.field3}')">${q.field3}</button>
+        <button onclick="checkAnswer('${q.field4}')">${q.field4}</button>
+    `;
     startTimer();
 }
 
 function startTimer() {
+    clearInterval(timer);
     time = 10;
     document.getElementById("timer").innerText = time;
-    clearInterval(timer);
 
     timer = setInterval(() => {
         time--;
         document.getElementById("timer").innerText = time;
-        if (time === 0) {
+        if (time <= 0) {
             nextQuestion();
         }
     }, 1000);
 }
 
 function checkAnswer(ans) {
-    if (ans === questions[index].ans) {
+    if (ans === questions[currentIndex].answer) {
         score++;
+        document.getElementById("score").innerText = score;
     }
     nextQuestion();
 }
 
 function nextQuestion() {
     clearInterval(timer);
-    index++;
+    currentIndex++;
 
-    if (index < questions.length) {
-        loadQuestion();
+    if (currentIndex < questions.length) {
+        showQuestion();
     } else {
-        document.getElementById("score").innerText = "Final Score: " + score;
-        document.getElementById("question").innerText = "Quiz Completed";
-        document.getElementById("options").innerHTML = "";
+        document.getElementById("result").innerText = "Quiz Completed";
+        document.getElementById("listArea").innerHTML = "Final Score: " + score;
+        saveScore();
     }
 }
 
-loadQuestion();
-</script>
-4. JSON Data Format
+async function saveScore() {
+    let obj = { field1: "Student", field2: score.toString(), field3: "Quiz", field4: "Completed" };
 
-[
-  {
-    "q": "Capital of India?",
-    "options": ["Delhi", "Mumbai", "Chennai"],
-    "ans": "Delhi"
-  }
-]
-5. Node.js Backend
+    await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(obj)
+    });
+}
+server.js
 
 const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+
 const app = express();
 
-app.get("/questions", (req, res) => {
-    res.json([
-        { q: "Capital of India?", options: ["Delhi", "Mumbai", "Chennai"], ans: "Delhi" }
-    ]);
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.listen(3000);
-6. NoSQL Database
+const Data = mongoose.model("QuizScore", DataSchema);
 
-Questions, answers, and user scores can be stored in MongoDB.
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Quiz Score Saved Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
+});
 
-7. Conclusion / Working
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-Questions are loaded one by one, timer runs for each question, score is calculated automatically, and result is shown at the end.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Form replaced by quiz display, timer and score logic added, model name QuizScore.
 
-4) Video Learning Page
+Question 4: Video Learning Page
 
-1. HTML5 Structure
-
-HTML5 video tag is used for playing educational videos.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Video Learning Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="video-box">
-        <h2>Video Learning Page</h2>
-
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Video Learning Page</h2>
         <video id="videoPlayer" width="100%" controls>
-            <source src="lesson.mp4" type="video/mp4">
+            <source src="sample.mp4" type="video/mp4">
         </video>
-
-        <div class="mt-3">
-            <p>Watched Time: <span id="watchTime">0</span> seconds</p>
-            <p>Video Progress: <span id="progressText">Not Saved</span></p>
-        </div>
-
+        <div class="result-box" id="result">Watch the video</div>
+        <div id="listArea" class="mt-3"></div>
         <div class="text-center">
-            <button onclick="saveProgress()">Save Progress</button>
+            <button type="button" class="btn btn-primary" onclick="saveProgress()">Save Progress</button>
         </div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    body {
-        background: #f0f0f0;
-        font-family: Arial;
-    }
-    .video-box {
-        max-width: 750px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 8px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-JavaScript tracks time spent and saves progress.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script>
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+let watchedTime = 0;
 let video = document.getElementById("videoPlayer");
-let watched = 0;
 
-video.addEventListener("timeupdate", function() {
-    watched = Math.floor(video.currentTime);
-    document.getElementById("watchTime").innerText = watched;
+video?.addEventListener("timeupdate", function() {
+    watchedTime = Math.floor(video.currentTime);
+    document.getElementById("result").innerText = "Watched Time: " + watchedTime + " seconds";
 });
 
 async function saveProgress() {
-    let data = { watchedTime: watched };
+    let obj = { field1: "Video 1", field2: watchedTime.toString(), field3: "Progress Saved", field4: "" };
 
-    let res = await fetch("/saveProgress", {
+    let res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(obj)
     });
 
     let msg = await res.text();
-    document.getElementById("progressText").innerText = msg;
+    document.getElementById("listArea").innerText = msg;
 }
-</script>
-4. JSON Data Format
-
-{
-  "watchedTime": 120
-}
-5. Node.js Backend
+server.js
 
 const express = require("express");
-const app = express();
-app.use(express.json());
+const mongoose = require("mongoose");
+const path = require("path");
 
-app.post("/saveProgress", (req, res) => {
-    res.send("Progress saved: " + req.body.watchedTime + " seconds");
+const app = express();
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.listen(3000);
-6. NoSQL Database
+const Data = mongoose.model("VideoProgress", DataSchema);
 
-MongoDB can store watched time and video progress for each student.
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Video Progress Saved");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
+});
 
-7. Conclusion / Working
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-Students watch video lessons, JavaScript tracks time spent, and Node.js stores the progress on the server.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Video element added, timeupdate event added, model name VideoProgress.
 
-5) Product Catalog Page
+Question 5: Product Catalog Page
 
-1. HTML5 Structure
-
-HTML layout is used to show products and filter options.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Product Catalog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-4">
-        <h2 class="text-center">Product Catalog Page</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Product Catalog Page</h2>
 
-        <div class="row mb-4">
-            <div class="col-md-6 mx-auto">
-                <label>Select Category</label>
-                <select id="category" class="form-control">
-                    <option value="All">All</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Books">Books</option>
-                </select>
-            </div>
+        <div class="mb-3">
+            <label>Select Category</label>
+            <select id="field1" class="form-control" onchange="loadData()">
+                <option value="All">All</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Books">Books</option>
+                <option value="Clothes">Clothes</option>
+            </select>
         </div>
 
-        <div class="row" id="productList"></div>
+        <div class="result-box" id="result">Products loaded from server</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-Bootstrap grid system displays products in rows and columns.
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<style>
-    .card {
-        margin-bottom: 20px;
-        box-shadow: 0 0 5px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
-
-jQuery loads and filters products dynamically.
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-function loadProducts(cat = "All") {
-    $.get("/products", function(data) {
-        let output = "";
-
-        data.forEach(function(p) {
-            if (cat === "All" || p.category === cat) {
-                output += `
-                    <div class="col-md-4">
-                        <div class="card p-3">
-                            <h5>${p.name}</h5>
-                            <p>Category: ${p.category}</p>
-                            <p>Price: ₹${p.price}</p>
-                        </div>
-                    </div>
-                `;
-            }
-        });
-
-        $("#productList").html(output);
-    });
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
 }
 
-$("#category").change(function() {
-    loadProducts($(this).val());
-});
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-loadProducts();
-</script>
-4. JSON Data Format
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-[
-  { "name": "Laptop", "category": "Electronics", "price": 50000 },
-  { "name": "Shirt", "category": "Clothing", "price": 1200 }
-]
-5. Node.js Backend
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+async function loadData() {
+    let selectedCategory = document.getElementById("field1").value;
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    let out = "";
+    data.forEach(item => {
+        if (selectedCategory === "All" || item.field2 === selectedCategory) {
+            out += `
+            <div class="card-box">
+                <p><b>Product:</b> ${item.field1 || ""}</p>
+                <p><b>Category:</b> ${item.field2 || ""}</p>
+                <p><b>Price:</b> ${item.field3 || ""}</p>
+                <p><b>Description:</b> ${item.field4 || ""}</p>
+            </div>`;
+        }
+    });
+
+    document.getElementById("listArea").innerHTML = out;
+}
+
+loadData();
+server.js
 
 const express = require("express");
-const app = express();
+const path = require("path");
 
-app.get("/products", (req, res) => {
+const app = express();
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/api", (req, res) => {
     res.json([
-        { name: "Laptop", category: "Electronics", price: 50000 },
-        { name: "Shirt", category: "Clothing", price: 1200 },
-        { name: "Book", category: "Books", price: 500 }
+        { field1: "Laptop", field2: "Electronics", field3: "50000", field4: "Good product" },
+        { field1: "Java Book", field2: "Books", field3: "500", field4: "Useful for study" },
+        { field1: "Shirt", field2: "Clothes", field3: "1200", field4: "Cotton shirt" }
     ]);
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Category filter added in HTML and JS, backend returns static JSON products.
 
-Product details can be stored in MongoDB collection.
+Question 6: Feedback Collection System
 
-7. Conclusion / Working
-
-Products are loaded from server in JSON format, and users can filter them by category dynamically.
-
-6) Feedback Collection System
-
-1. HTML5 Structure
-
-HTML5 form is used to collect student feedback.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Feedback Form</title>
+    <title>Feedback Collection</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="form-box">
-        <h2>Student Feedback Form</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Feedback Collection System</h2>
 
-        <form id="feedbackForm">
+        <form id="mainForm">
             <div class="mb-3">
-                <label>Student Name</label>
-                <input type="text" id="name" class="form-control" placeholder="Enter name" required>
+                <label id="label1">Student Name</label>
+                <input type="text" id="field1" class="form-control">
             </div>
 
             <div class="mb-3">
-                <label>Department</label>
-                <input type="text" id="dept" class="form-control" placeholder="Enter department" required>
+                <label id="label2">Department</label>
+                <input type="text" id="field2" class="form-control">
             </div>
 
             <div class="mb-3">
-                <label>Feedback Message</label>
-                <textarea id="feedback" class="form-control" rows="4" placeholder="Enter feedback" required></textarea>
+                <label id="label3">Feedback</label>
+                <input type="text" id="field3" class="form-control">
             </div>
 
             <div class="mb-3">
-                <label>Rating</label>
-                <select id="rating" class="form-control">
-                    <option>Excellent</option>
-                    <option>Good</option>
-                    <option>Average</option>
-                </select>
+                <label id="label4">Rating</label>
+                <input type="text" id="field4" class="form-control">
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-success" onclick="loadData()">Load Data</button>
+            </div>
         </form>
 
-        <div id="msg" class="mt-3"></div>
+        <div class="result-box" id="result">Output will appear here</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-CSS and Bootstrap improve appearance and responsiveness.
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-<style>
-    .form-box {
-        max-width: 650px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px lightgray;
-    }
-</style>
-3. JavaScript / jQuery Function
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-JavaScript validates and sends feedback data.
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-<script>
-document.getElementById("feedbackForm").addEventListener("submit", async function(e) {
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    let data = {
-        name: document.getElementById("name").value,
-        dept: document.getElementById("dept").value,
-        feedback: document.getElementById("feedback").value,
-        rating: document.getElementById("rating").value
-    };
+    let field1 = document.getElementById("field1").value;
+    let field2 = document.getElementById("field2").value;
+    let field3 = document.getElementById("field3").value;
+    let field4 = document.getElementById("field4").value;
 
-    if (data.name === "" || data.dept === "" || data.feedback === "") {
-        alert("Please fill all fields");
+    if (field1 === "" || field2 === "" || field3 === "") {
+        alert("Please fill required fields");
         return;
     }
 
-    let res = await fetch("/feedback", {
+    let obj = { field1, field2, field3, field4 };
+
+    let res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(obj)
     });
 
     let msg = await res.text();
-    document.getElementById("msg").innerHTML = msg;
+    document.getElementById("result").innerText = msg;
+    loadData();
 });
-</script>
-4. JSON Data Format
 
-{
-  "name": "Arun",
-  "dept": "IT",
-  "feedback": "The portal is very useful",
-  "rating": "Excellent"
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Name:</b> ${item.field1 || ""}</p>
+            <p><b>Department:</b> ${item.field2 || ""}</p>
+            <p><b>Feedback:</b> ${item.field3 || ""}</p>
+            <p><b>Rating:</b> ${item.field4 || ""}</p>
+        </div>`;
+    });
+
+    document.getElementById("listArea").innerHTML = out;
 }
-5. Node.js Backend
+server.js
 
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
+
 const app = express();
 
 app.use(express.json());
-mongoose.connect("mongodb://127.0.0.1:27017/collegeDB");
+app.use(express.static(path.join(__dirname, "public")));
 
-const Feedback = mongoose.model("Feedback", {
-    name: String,
-    dept: String,
-    feedback: String,
-    rating: String
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.post("/feedback", async (req, res) => {
-    await Feedback.create(req.body);
-    res.send("Feedback Submitted Successfully");
+const Data = mongoose.model("Feedback", DataSchema);
+
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Feedback Submitted Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-MongoDB stores student feedback as separate documents.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Labels changed to feedback fields, display changed, model name Feedback.
 
-7. Conclusion / Working
+Question 7: Dynamic Quote Generator
 
-Students fill the feedback form, validation is done using JavaScript, and feedback is stored in MongoDB through Node.js.
-
-7) Dynamic Quote Generator
-
-1. HTML5 Structure
-
-HTML is used to create a quote box and a button.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dynamic Quote Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="quote-box">
-        <h2>Motivational Quote Generator</h2>
-
-        <div class="quote-area">
-            <p id="quoteText">Click the button to view a quote</p>
-        </div>
-
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Dynamic Quote Generator</h2>
+        <div class="result-box" id="result">Click button to get quote</div>
         <div class="text-center">
-            <button id="btnQuote">Show Random Quote</button>
+            <button type="button" class="btn btn-primary" onclick="loadData()">Show Quote</button>
         </div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    body {
-        background: #f7f7f7;
-        font-family: Arial;
-    }
-    .quote-box {
-        max-width: 650px;
-        margin: 40px auto;
-        background: white;
-        padding: 30px;
-        text-align: center;
-        border-radius: 10px;
-        box-shadow: 0 0 8px gray;
-    }
-    .quote-area {
-        margin: 20px 0;
-        font-size: 22px;
-        color: darkblue;
-    }
-</style>
-3. JavaScript / jQuery Function
-
-jQuery handles button click and gets a random quote from server.
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$("#btnQuote").click(function() {
-    $.get("/quote", function(data) {
-        $("#quoteText").text(data.quote);
-    });
-});
-</script>
-4. JSON Data Format
-
-{
-  "quote": "Success comes through hard work."
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
 }
-5. Node.js Backend
+
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+    document.getElementById("result").innerText = data.field1;
+}
+server.js
 
 const express = require("express");
+const path = require("path");
+
 const app = express();
+app.use(express.static(path.join(__dirname, "public")));
 
-const quotes = [
-    { quote: "Success comes through hard work." },
-    { quote: "Never give up." },
-    { quote: "Practice makes a man perfect." }
-];
-
-app.get("/quote", (req, res) => {
+app.get("/api", (req, res) => {
+    let quotes = [
+        { field1: "Success comes through hard work." },
+        { field1: "Never give up." },
+        { field1: "Practice daily." }
+    ];
     let random = Math.floor(Math.random() * quotes.length);
     res.json(quotes[random]);
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Form removed, one button added, backend returns one random quote.
 
-Quotes can also be stored in MongoDB collection if needed.
+Question 8: Responsive Tour Booking Website
 
-7. Conclusion / Working
-
-When the user clicks the button, jQuery requests a quote from Node.js server, and the quote is displayed dynamically.
-
-8) Responsive Tour Booking Website
-
-1. HTML5 Structure
-
-HTML form is used to select destination, number of people, and booking options.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Tour Booking</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="booking-box">
-        <h2>Tour Booking Website</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Responsive Tour Booking Website</h2>
 
-        <form id="tourForm">
+        <form id="mainForm">
             <div class="mb-3">
-                <label>Customer Name</label>
-                <input type="text" id="cname" class="form-control" placeholder="Enter name">
+                <label id="label1">Customer Name</label>
+                <input type="text" id="field1" class="form-control">
             </div>
 
             <div class="mb-3">
-                <label>Select Destination</label>
-                <select id="place" class="form-control">
-                    <option value="5000">Ooty - ₹5000</option>
-                    <option value="7000">Goa - ₹7000</option>
-                    <option value="10000">Kashmir - ₹10000</option>
-                </select>
+                <label id="label2">Destination Price</label>
+                <input type="text" id="field2" class="form-control" onkeyup="calculateTotal()" placeholder="Enter price">
             </div>
 
             <div class="mb-3">
-                <label>Number of Persons</label>
-                <input type="number" id="count" class="form-control" value="1">
+                <label id="label3">Number of Persons</label>
+                <input type="text" id="field3" class="form-control" onkeyup="calculateTotal()">
+            </div>
+
+            <div class="mb-3">
+                <label id="label4">Total Price</label>
+                <input type="text" id="field4" class="form-control" readonly>
             </div>
 
             <div class="text-center">
-                <button type="button" onclick="calculateTotal()" class="btn btn-primary">Calculate Total</button>
-                <button type="button" onclick="bookTour()" class="btn btn-success">Book Now</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-success" onclick="loadData()">Load Data</button>
             </div>
         </form>
 
-        <h4 class="mt-4">Total Price: ₹<span id="total">0</span></h4>
+        <div class="result-box" id="result">Output will appear here</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-Bootstrap responsive layout adjusts the form for all screens.
-
-<style>
-    .booking-box {
-        max-width: 650px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px lightgray;
-    }
-</style>
-3. JavaScript / jQuery Function
-
-JavaScript calculates total instantly and books the tour.
-
-<script>
-function calculateTotal() {
-    let price = parseInt(document.getElementById("place").value);
-    let count = parseInt(document.getElementById("count").value);
-    let total = price * count;
-    document.getElementById("total").innerText = total;
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
 }
 
-async function bookTour() {
-    let data = {
-        cname: document.getElementById("cname").value,
-        place: document.getElementById("place").options[document.getElementById("place").selectedIndex].text,
-        count: document.getElementById("count").value,
-        total: document.getElementById("total").innerText
-    };
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-    let res = await fetch("/bookTour", {
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+function calculateTotal() {
+    let price = parseInt(document.getElementById("field2").value) || 0;
+    let count = parseInt(document.getElementById("field3").value) || 0;
+    document.getElementById("field4").value = price * count;
+}
+
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    let field1 = document.getElementById("field1").value;
+    let field2 = document.getElementById("field2").value;
+    let field3 = document.getElementById("field3").value;
+    let field4 = document.getElementById("field4").value;
+
+    if (field1 === "" || field2 === "" || field3 === "") {
+        alert("Please fill required fields");
+        return;
+    }
+
+    let obj = { field1, field2, field3, field4 };
+
+    let res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(obj)
     });
 
-    alert(await res.text());
-}
-</script>
-4. JSON Data Format
-
-{
-  "cname": "Ravi",
-  "place": "Goa",
-  "count": 2,
-  "total": 14000
-}
-5. Node.js Backend
-
-const express = require("express");
-const app = express();
-app.use(express.json());
-
-app.post("/bookTour", (req, res) => {
-    res.send("Tour Booked Successfully");
+    let msg = await res.text();
+    document.getElementById("result").innerText = msg;
+    loadData();
 });
 
-app.listen(3000);
-6. NoSQL Database
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
 
-Tour booking details can be stored in MongoDB.
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Name:</b> ${item.field1 || ""}</p>
+            <p><b>Destination Price:</b> ${item.field2 || ""}</p>
+            <p><b>Persons:</b> ${item.field3 || ""}</p>
+            <p><b>Total:</b> ${item.field4 || ""}</p>
+        </div>`;
+    });
 
-7. Conclusion / Working
+    document.getElementById("listArea").innerHTML = out;
+}
+server.js
 
-Users choose destination and count, JavaScript calculates the total price immediately, and booking data is sent to server.
+const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
 
-9) Live Match Score Website
+const app = express();
 
-1. HTML5 Structure
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-HTML displays match details and live score section.
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
+});
+
+const Data = mongoose.model("Tour", DataSchema);
+
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Tour Booked Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
+});
+
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
+
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Added calculateTotal() for instant price calculation, model name Tour.
+
+Question 9: Live Match Score Website
+
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Live Match Score</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="score-box">
-        <h2>Live Match Scores</h2>
-
-        <div class="match-card">
-            <h4 id="teamNames">Team A vs Team B</h4>
-            <p id="scoreText">Score loading...</p>
-            <p id="statusText">Status: Live</p>
-        </div>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Live Match Score Website</h2>
+        <div class="result-box" id="result">Loading score...</div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .score-box {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 0 10px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
-
-JavaScript timer and jQuery update scores every few seconds.
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-function loadScore() {
-    $.get("/score", function(data) {
-        $("#teamNames").text(data.match);
-        $("#scoreText").text(data.score);
-        $("#statusText").text("Status: " + data.status);
-    });
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
 }
 
-setInterval(loadScore, 5000);
-loadScore();
-</script>
-4. JSON Data Format
-
-{
-  "match": "India vs Australia",
-  "score": "India 150/3",
-  "status": "Live"
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
 }
-5. Node.js Backend
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+script.js
+
+const apiUrl = "/api";
+
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    document.getElementById("result").innerHTML = `
+        <p><b>Match:</b> ${data.field1}</p>
+        <p><b>Score:</b> ${data.field2}</p>
+        <p><b>Status:</b> ${data.field3}</p>
+    `;
+}
+
+loadData();
+setInterval(loadData, 5000);
+server.js
 
 const express = require("express");
-const app = express();
+const path = require("path");
 
-app.get("/score", (req, res) => {
+const app = express();
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/api", (req, res) => {
     res.json({
-        match: "India vs Australia",
-        score: "India 150/3",
-        status: "Live"
+        field1: "India vs Australia",
+        field2: "180/4",
+        field3: "Live",
+        field4: ""
     });
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Form removed, setInterval(loadData, 5000) added for auto-refresh live score.
 
-Live score history can be stored in MongoDB if needed.
+Question 10: Library Book Search
 
-7. Conclusion / Working
-
-The web page automatically fetches the updated score from Node.js server every few seconds and displays it dynamically.
-
-10) Library Book Search
-
-1. HTML5 Structure
-
-HTML page contains search box and result section.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Library Book Search</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="search-box">
-        <h2>Search Books</h2>
-
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Library Book Search</h2>
         <div class="mb-3">
-            <input type="text" id="searchKey" class="form-control" placeholder="Enter book name">
+            <label>Book Name</label>
+            <input type="text" id="field1" class="form-control">
         </div>
-
         <div class="text-center">
-            <button id="searchBtn" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary" onclick="searchBook()">Search</button>
         </div>
-
-        <div id="resultArea" class="mt-4"></div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .search-box {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 8px gray;
-    }
-    .book-card {
-        padding: 12px;
-        border: 1px solid lightgray;
-        margin-top: 10px;
-        border-radius: 8px;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-jQuery handles search event and displays books dynamically.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$("#searchBtn").click(function() {
-    let key = $("#searchKey").val();
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-    $.get("/books?key=" + key, function(data) {
-        let output = "";
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+script.js
 
-        data.forEach(function(book) {
-            output += `
-                <div class="book-card">
-                    <h5>${book.title}</h5>
-                    <p>Author: ${book.author}</p>
-                </div>
-            `;
-        });
+const apiUrl = "/api";
 
-        $("#resultArea").html(output);
+async function searchBook() {
+    let key = document.getElementById("field1").value;
+    let res = await fetch(apiUrl + "?key=" + key);
+    let data = await res.json();
+
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Book:</b> ${item.field1}</p>
+            <p><b>Author:</b> ${item.field2}</p>
+        </div>`;
     });
-});
-</script>
-4. JSON Data Format
 
-[
-  { "title": "Java Programming", "author": "Balagurusamy" }
-]
-5. Node.js Backend
+    document.getElementById("listArea").innerHTML = out;
+}
+server.js
 
 const express = require("express");
+const path = require("path");
+
 const app = express();
+app.use(express.static(path.join(__dirname, "public")));
 
-let books = [
-    { title: "Java Programming", author: "Balagurusamy" },
-    { title: "Web Technology", author: "Kogent" }
-];
+app.get("/api", (req, res) => {
+    let books = [
+        { field1: "Java Programming", field2: "Balagurusamy" },
+        { field1: "Web Technology", field2: "Kogent" },
+        { field1: "Node JS", field2: "Author A" }
+    ];
 
-app.get("/books", (req, res) => {
-    let key = req.query.key.toLowerCase();
-    let result = books.filter(b => b.title.toLowerCase().includes(key));
+    let key = (req.query.key || "").toLowerCase();
+    let result = books.filter(book => book.field1.toLowerCase().includes(key));
     res.json(result);
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Search input and searchBook() added, backend filters books using query string.
 
-Book details can be stored and searched from MongoDB database.
+Question 11: Student Dashboard
 
-7. Conclusion / Working
-
-Users search a book name, request goes to server, and matching books are displayed dynamically.
-
-11) Student Dashboard
-
-1. HTML5 Structure
-
-HTML is used to show student personal details, marks, and attendance.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Student Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="dashboard-box">
-        <h2>Student Dashboard</h2>
-
-        <div class="student-info">
-            <h4>Personal Details</h4>
-            <p id="name">Name: </p>
-            <p id="dept">Department: </p>
-        </div>
-
-        <div class="marks-info">
-            <h4>Marks</h4>
-            <p id="marks">Marks: </p>
-        </div>
-
-        <div class="attendance-info">
-            <h4>Attendance</h4>
-            <p id="attendance">Attendance: </p>
-        </div>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Student Dashboard</h2>
+        <div class="result-box" id="result">Loading dashboard...</div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .dashboard-box {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 8px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-JavaScript fetches data and updates DOM.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script>
-async function loadDashboard() {
-    let res = await fetch("/dashboard");
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+script.js
+
+const apiUrl = "/api";
+
+async function loadData() {
+    let res = await fetch(apiUrl);
     let data = await res.json();
 
-    document.getElementById("name").innerText = "Name: " + data.name;
-    document.getElementById("dept").innerText = "Department: " + data.dept;
-    document.getElementById("marks").innerText = "Marks: " + data.marks;
-    document.getElementById("attendance").innerText = "Attendance: " + data.attendance;
+    document.getElementById("result").innerHTML = `
+        <p><b>Name:</b> ${data.field1}</p>
+        <p><b>Department:</b> ${data.field2}</p>
+        <p><b>Marks:</b> ${data.field3}</p>
+        <p><b>Attendance:</b> ${data.field4}</p>
+    `;
 }
 
-loadDashboard();
-</script>
-4. JSON Data Format
-
-{
-  "name": "Arun",
-  "dept": "CSE",
-  "marks": 450,
-  "attendance": "92%"
-}
-5. Node.js Backend
+loadData();
+server.js
 
 const express = require("express");
-const app = express();
+const path = require("path");
 
-app.get("/dashboard", (req, res) => {
+const app = express();
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/api", (req, res) => {
     res.json({
-        name: "Arun",
-        dept: "CSE",
-        marks: 450,
-        attendance: "92%"
+        field1: "Arun",
+        field2: "CSE",
+        field3: "450",
+        field4: "92%"
     });
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Form removed, dashboard values loaded once from server.
 
-Student records, marks, and attendance can be stored in MongoDB.
+Question 12: Countdown Timer for Online Exam
 
-7. Conclusion / Working
-
-After login, the dashboard requests student details from server and displays them dynamically on the page.
-
-12) Countdown Timer for Online Exam
-
-1. HTML5 Structure
-
-HTML form is used to display exam question and answer area.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Online Exam Timer</title>
+    <title>Online Exam</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="exam-box">
-        <h2>Online Exam</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Countdown Timer for Online Exam</h2>
+        <p><b>Time Left:</b> <span id="timer">60</span> seconds</p>
 
-        <p>Time Remaining: <span id="time">60</span> seconds</p>
-
-        <form id="examForm">
+        <form id="mainForm">
             <div class="mb-3">
-                <label>Question 1: What is HTML?</label>
-                <textarea id="answer1" class="form-control" rows="4"></textarea>
+                <label id="label1">Answer</label>
+                <input type="text" id="field1" class="form-control">
             </div>
-
             <div class="text-center">
-                <button type="submit">Submit Answers</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
 
-        <div id="msg" class="mt-3"></div>
+        <div class="result-box" id="result">Output will appear here</div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .exam-box {
-        max-width: 700px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 8px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-JavaScript countdown timer automatically submits answers when time ends.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script>
-let timeLeft = 60;
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-let timer = setInterval(function() {
-    timeLeft--;
-    document.getElementById("time").innerText = timeLeft;
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+script.js
 
-    if (timeLeft <= 0) {
+const apiUrl = "/api";
+let time = 60;
+
+let timer = setInterval(() => {
+    time--;
+    document.getElementById("timer").innerText = time;
+
+    if (time <= 0) {
         clearInterval(timer);
-        submitExam();
+        document.getElementById("mainForm").requestSubmit();
     }
 }, 1000);
 
-document.getElementById("examForm").addEventListener("submit", function(e) {
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
     e.preventDefault();
-    submitExam();
-});
 
-async function submitExam() {
-    let data = {
-        answer1: document.getElementById("answer1").value
-    };
+    let field1 = document.getElementById("field1").value;
+    let obj = { field1, field2: "", field3: "", field4: "" };
 
-    let res = await fetch("/submitExam", {
+    let res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(obj)
     });
 
-    document.getElementById("msg").innerText = await res.text();
-}
-</script>
-4. JSON Data Format
-
-{
-  "answer1": "HTML is HyperText Markup Language"
-}
-5. Node.js Backend
+    let msg = await res.text();
+    document.getElementById("result").innerText = msg;
+});
+server.js
 
 const express = require("express");
-const app = express();
-app.use(express.json());
+const mongoose = require("mongoose");
+const path = require("path");
 
-app.post("/submitExam", (req, res) => {
-    res.send("Exam Submitted Successfully");
+const app = express();
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.listen(3000);
-6. NoSQL Database
+const Data = mongoose.model("ExamAnswer", DataSchema);
 
-Exam answers and results can be stored in MongoDB.
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Exam Submitted Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
+});
 
-7. Conclusion / Working
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-The timer counts down using JavaScript, and when time ends the answers are automatically sent to the server.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Countdown timer added and form auto-submits when time reaches zero.
 
-13) Online Voting System
+Question 13: Online Voting System
 
-1. HTML5 Structure
-
-HTML form is used to select a candidate and submit vote.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Online Voting</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="vote-box">
-        <h2>Online Voting System</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Online Voting System</h2>
 
-        <form id="voteForm">
+        <form id="mainForm">
             <div class="mb-3">
-                <label>Voter Name</label>
-                <input type="text" id="voter" class="form-control" placeholder="Enter your name">
+                <label id="label1">Voter Name</label>
+                <input type="text" id="field1" class="form-control">
             </div>
 
             <div class="mb-3">
-                <label>Select Candidate</label>
-                <select id="candidate" class="form-control">
-                    <option value="">Select</option>
-                    <option value="Candidate A">Candidate A</option>
-                    <option value="Candidate B">Candidate B</option>
-                    <option value="Candidate C">Candidate C</option>
-                </select>
+                <label id="label2">Candidate Name</label>
+                <input type="text" id="field2" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label id="label3">Voter ID</label>
+                <input type="text" id="field3" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label id="label4">Status</label>
+                <input type="text" id="field4" class="form-control" value="Voted">
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">Submit Vote</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-success" onclick="loadData()">Load Data</button>
             </div>
         </form>
 
-        <div id="msg" class="mt-3"></div>
+        <div class="result-box" id="result">Output will appear here</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .vote-box {
-        max-width: 650px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-JavaScript validates candidate selection and sends vote data.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script>
-document.getElementById("voteForm").addEventListener("submit", async function(e) {
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    let voter = document.getElementById("voter").value;
-    let candidate = document.getElementById("candidate").value;
+    let field1 = document.getElementById("field1").value;
+    let field2 = document.getElementById("field2").value;
+    let field3 = document.getElementById("field3").value;
+    let field4 = document.getElementById("field4").value;
 
-    if (voter === "" || candidate === "") {
-        alert("Please fill all fields");
+    if (field1 === "" || field2 === "" || field3 === "") {
+        alert("Please fill required fields");
         return;
     }
 
-    let data = { voter, candidate };
+    let obj = { field1, field2, field3, field4 };
 
-    let res = await fetch("/vote", {
+    let res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(obj)
     });
 
-    document.getElementById("msg").innerText = await res.text();
+    let msg = await res.text();
+    document.getElementById("result").innerText = msg;
+    loadData();
 });
-</script>
-4. JSON Data Format
 
-{
-  "voter": "Kavi",
-  "candidate": "Candidate A"
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Voter:</b> ${item.field1 || ""}</p>
+            <p><b>Candidate:</b> ${item.field2 || ""}</p>
+            <p><b>Voter ID:</b> ${item.field3 || ""}</p>
+            <p><b>Status:</b> ${item.field4 || ""}</p>
+        </div>`;
+    });
+
+    document.getElementById("listArea").innerHTML = out;
 }
-5. Node.js Backend
+server.js
 
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
+
 const app = express();
 
 app.use(express.json());
-mongoose.connect("mongodb://127.0.0.1:27017/voteDB");
+app.use(express.static(path.join(__dirname, "public")));
 
-const Vote = mongoose.model("Vote", {
-    voter: String,
-    candidate: String
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.post("/vote", async (req, res) => {
-    await Vote.create(req.body);
-    res.send("Vote Submitted Successfully");
+const Data = mongoose.model("Vote", DataSchema);
+
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Vote Submitted Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-MongoDB securely stores the vote details as documents.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Labels changed to voting details, model name Vote, success text changed.
 
-7. Conclusion / Working
+Question 14: Movie Website
 
-The user selects a candidate, validation checks the input, and Node.js stores the vote in MongoDB.
-
-14) Movie Website
-
-1. HTML5 Structure
-
-HTML media and display elements are used for trailer, rating, and review section.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
     <title>Movie Website</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="movie-box">
-        <h2>Movie Details</h2>
-
-        <video id="trailer" width="100%" controls>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Movie Website</h2>
+        <video id="videoPlayer" width="100%" controls>
             <source src="trailer.mp4" type="video/mp4">
         </video>
-
-        <div class="mt-3">
-            <h4 id="movieName">Movie Name</h4>
-            <p id="rating">Rating: </p>
-            <p id="review">Review: </p>
-        </div>
+        <div class="result-box" id="result">Loading movie details...</div>
     </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .movie-box {
-        max-width: 750px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px gray;
-    }
-</style>
-3. JavaScript / jQuery Function
-
-jQuery loads movie details dynamically from server.
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    $.get("/movie", function(data) {
-        $("#movieName").text(data.name);
-        $("#rating").text("Rating: " + data.rating);
-        $("#review").text("Review: " + data.review);
-    });
-});
-</script>
-4. JSON Data Format
-
-{
-  "name": "Leo",
-  "rating": "4.5/5",
-  "review": "Action packed movie"
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
 }
-5. Node.js Backend
+
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+script.js
+
+const apiUrl = "/api";
+
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    document.getElementById("result").innerHTML = `
+        <p><b>Movie Name:</b> ${data.field1}</p>
+        <p><b>Rating:</b> ${data.field2}</p>
+        <p><b>Review:</b> ${data.field3}</p>
+    `;
+}
+
+loadData();
+server.js
 
 const express = require("express");
-const app = express();
+const path = require("path");
 
-app.get("/movie", (req, res) => {
+const app = express();
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/api", (req, res) => {
     res.json({
-        name: "Leo",
-        rating: "4.5/5",
-        review: "Action packed movie"
+        field1: "Leo",
+        field2: "4.5/5",
+        field3: "Action packed movie",
+        field4: ""
     });
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Trailer video added, backend returns movie details directly.
 
-Movie reviews, ratings, and trailer details can be stored in MongoDB.
+Question 15: Real-Time Attendance Marking System
 
-7. Conclusion / Working
-
-Movie details are loaded from server and shown dynamically using jQuery on the web page.
-
-15) Real-Time Attendance Marking System
-
-1. HTML5 Structure
-
-HTML interface is used to mark attendance with a button.
+index.html
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Attendance Marking</title>
+    <title>Attendance System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="attendance-box">
-        <h2>Real-Time Attendance System</h2>
+<div class="container">
+    <div class="main-box">
+        <h2 id="pageTitle">Real-Time Attendance Marking System</h2>
 
-        <div class="mb-3">
-            <label>Student Name</label>
-            <input type="text" id="name" class="form-control" placeholder="Enter student name">
-        </div>
+        <form id="mainForm">
+            <div class="mb-3">
+                <label id="label1">Student Name</label>
+                <input type="text" id="field1" class="form-control">
+            </div>
 
-        <div class="mb-3">
-            <label>Register Number</label>
-            <input type="text" id="regno" class="form-control" placeholder="Enter register number">
-        </div>
+            <div class="mb-3">
+                <label id="label2">Register Number</label>
+                <input type="text" id="field2" class="form-control">
+            </div>
 
-        <div class="text-center">
-            <button id="markBtn" class="btn btn-success">Mark Attendance</button>
-        </div>
+            <div class="mb-3">
+                <label id="label3">Department</label>
+                <input type="text" id="field3" class="form-control">
+            </div>
 
-        <div id="msg" class="mt-4 alert alert-info"></div>
+            <div class="mb-3">
+                <label id="label4">Date</label>
+                <input type="text" id="field4" class="form-control">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-success" onclick="loadData()">Load Data</button>
+            </div>
+        </form>
+
+        <div class="result-box" id="result">Output will appear here</div>
+        <div id="listArea" class="mt-3"></div>
     </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
-2. CSS3 / Bootstrap Design
+style.css
 
-<style>
-    .attendance-box {
-        max-width: 650px;
-        margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px lightgray;
-    }
-</style>
-3. JavaScript / jQuery Function
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
 
-JavaScript or jQuery handles click event and gives immediate confirmation.
+.main-box {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+}
 
-<script>
-document.getElementById("markBtn").addEventListener("click", async function() {
-    let data = {
-        name: document.getElementById("name").value,
-        regno: document.getElementById("regno").value
-    };
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-    if (data.name === "" || data.regno === "") {
-        alert("Please enter all details");
+.result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 50px;
+}
+
+.card-box {
+    background: white;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px lightgray;
+}
+
+button {
+    margin: 5px;
+}
+script.js
+
+const apiUrl = "/api";
+document.getElementById("field4").value = new Date().toLocaleDateString();
+
+document.getElementById("mainForm")?.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    let field1 = document.getElementById("field1").value;
+    let field2 = document.getElementById("field2").value;
+    let field3 = document.getElementById("field3").value;
+    let field4 = document.getElementById("field4").value;
+
+    if (field1 === "" || field2 === "" || field3 === "") {
+        alert("Please fill required fields");
         return;
     }
 
-    let res = await fetch("/attendance", {
+    let obj = { field1, field2, field3, field4 };
+
+    let res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(obj)
     });
 
-    document.getElementById("msg").innerText = await res.text();
+    let msg = await res.text();
+    document.getElementById("result").innerText = msg;
+    loadData();
 });
-</script>
-4. JSON Data Format
 
-{
-  "name": "Arun",
-  "regno": "23IT101"
+async function loadData() {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+
+    let out = "";
+    data.forEach(item => {
+        out += `
+        <div class="card-box">
+            <p><b>Name:</b> ${item.field1 || ""}</p>
+            <p><b>Register No:</b> ${item.field2 || ""}</p>
+            <p><b>Department:</b> ${item.field3 || ""}</p>
+            <p><b>Date:</b> ${item.field4 || ""}</p>
+        </div>`;
+    });
+
+    document.getElementById("listArea").innerHTML = out;
 }
-5. Node.js Backend
+server.js
 
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
+
 const app = express();
 
 app.use(express.json());
-mongoose.connect("mongodb://127.0.0.1:27017/attendanceDB");
+app.use(express.static(path.join(__dirname, "public")));
 
-const Attendance = mongoose.model("Attendance", {
-    name: String,
-    regno: String,
-    date: String
+mongoose.connect("mongodb://127.0.0.1:27017/aiwdlab")
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
+
+const DataSchema = new mongoose.Schema({
+    field1: String,
+    field2: String,
+    field3: String,
+    field4: String
 });
 
-app.post("/attendance", async (req, res) => {
-    await Attendance.create({
-        name: req.body.name,
-        regno: req.body.regno,
-        date: new Date().toLocaleDateString()
-    });
-    res.send("Attendance Marked Successfully");
+const Data = mongoose.model("Attendance", DataSchema);
+
+app.post("/api", async (req, res) => {
+    try {
+        await Data.create(req.body);
+        res.send("Attendance Marked Successfully");
+    } catch (err) {
+        res.status(500).send("Error while saving data");
+    }
 });
 
-app.listen(3000);
-6. NoSQL Database
+app.get("/api", async (req, res) => {
+    try {
+        let data = await Data.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).send("Error while fetching data");
+    }
+});
 
-MongoDB stores attendance records for each student.
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+Small change from main: Current date is auto-filled, model name Attendance, labels/display changed.
 
-7. Conclusion / Working
-
-Students click the attendance button, the request is sent to Node.js, and confirmation is shown immediately on the same page.
